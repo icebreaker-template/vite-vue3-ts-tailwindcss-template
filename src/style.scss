@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 html {
-
+  @apply transition-colors duration-1000;
 }
 
-html.dark{
+html.dark {
   @apply bg-gray-800 text-white;
 }
