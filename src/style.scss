@@ -3,9 +3,29 @@
 @tailwind utilities;
 
 html {
-  @apply transition-colors duration-1000;
+  // @apply transition-colors duration-1000;
 }
 
 html.dark {
+  color-scheme: dark;
   @apply bg-gray-800 text-white;
+}
+
+/* Color Mode transition */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+.dark::view-transition-old(root) {
+  z-index: 2147483646;
+}
+.dark::view-transition-new(root) {
+  z-index: 1;
 }
