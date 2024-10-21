@@ -1,6 +1,6 @@
 import AboutView from '@/pages/about.vue'
-
 import HomeView from '@/pages/index.vue'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
