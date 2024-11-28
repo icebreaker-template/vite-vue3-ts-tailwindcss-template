@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Stepper, StepperDescription, StepperIndicator, StepperItem, StepperSeparator, StepperTitle, StepperTrigger } from '@/components/ui/stepper'
-
 import { BookUser, Check, CreditCard, Truck } from 'lucide-vue-next'
+
+import { Step, Steps } from './Steps'
 
 const steps = [{
   step: 1,
@@ -27,30 +27,20 @@ const steps = [{
 </script>
 
 <template>
-  <Stepper>
-    <StepperItem
+  <Steps>
+    <Step
       v-for="item in steps"
       :key="item.step"
       class="basis-1/4"
       :step="item.step"
-    >
-      <StepperTrigger>
-        <StepperIndicator>
-          <component :is="item.icon" class="w-4 h-4" />
-        </StepperIndicator>
-        <div class="flex flex-col">
-          <StepperTitle>
-            {{ item.title }}
-          </StepperTitle>
-          <StepperDescription>
-            {{ item.description }}
-          </StepperDescription>
-        </div>
-      </StepperTrigger>
-      <StepperSeparator
-        v-if="item.step !== steps[steps.length - 1].step"
-        class="w-full h-px"
-      />
-    </StepperItem>
-  </Stepper>
+    />
+  </Steps>
+  <Steps orientation="vertical" class="mx-auto flex w-full max-w-md flex-col justify-start gap-10">
+    <Step
+      v-for="item in steps"
+      :key="item.step"
+      class="basis-1/4"
+      :step="item.step"
+    />
+  </Steps>
 </template>
