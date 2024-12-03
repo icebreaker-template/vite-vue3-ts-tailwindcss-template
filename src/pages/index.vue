@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import HelloWorld from '@/components/HelloWorld.vue'
+
 </script>
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-    <HelloWorld />
+    <model-viewer
+      alt="xxxx"
+      src="/NeilArmstrong.glb"
+      ar shadow-intensity="1" camera-controls touch-action="pan-y"
+    />
+    <model-viewer
+      alt="xxxx"
+      src="/1090012-3D.glb"
+      ar shadow-intensity="1" camera-controls touch-action="pan-y"
+    />
   </div>
 </template>
