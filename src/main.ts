@@ -8,4 +8,3 @@ import '@google/model-viewer'
 eruda.init()
 
 createApp(App).use(router).mount('#app')
-E
