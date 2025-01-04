@@ -1,29 +1,27 @@
-describe('compile', () => {
-  it('hello world', () => {
-    const vueCode = fs.readFileSync(HelloWorldVuePath, 'utf8')
-    const { descriptor } = parse(vueCode)
-    if (descriptor.template?.content) {
-      const { code } = compileTemplate({
-        filename: 'x-filename',
-        id: 'x-id',
-        source: descriptor.template?.content,
-      })
-      expect(code).toMatchSnapshot('template')
-    }
+import HelloWorld from '@/components/HelloWorld.vue'
+import { mount } from '@vue/test-utils'
 
-    if (descriptor) {
-      const { content } = compileScript(descriptor, { id: 'x-id' })
-      expect(content).toMatchSnapshot('script')
-    }
+describe('helloWorld', () => {
+  it('displays message', () => {
+    const wrapper = mount(HelloWorld, {
+      props: {
+        msg: '你我皆是牛马',
+      },
+    })
 
-    const styleCode = descriptor.styles.map((style) => {
-      const { code } = compileStyle({
-        filename: 'x-filename',
-        id: 'x-id',
-        source: style.content,
-      })
-      return code
-    }).join('\n/* ------------------- */\n')
-    expect(styleCode).toMatchSnapshot('style')
+    expect(wrapper.text()).toContain('你我皆是牛马')
+  })
+
+  it('modelValue should be updated', async () => {
+    const initialText = 'initialText'
+    const wrapper = mount(HelloWorld, {
+      props: {
+        'modelValue': initialText,
+        'onUpdate:modelValue': e => wrapper.setProps({ modelValue: e }),
+      },
+    })
+    expect(wrapper.find('input').element.value).toBe(initialText)
+    await wrapper.find('input').setValue('test')
+    expect(wrapper.props('modelValue')).toBe('test')
   })
 })
