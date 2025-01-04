@@ -11,7 +11,9 @@ const name = defineModel<string>({
 <template>
   <div>
     <h1> {{ msg }}</h1>
-    <div>Hello World</div>
+    <div class="text-[#ff166f]">
+      Hello World
+    </div>
     <input v-model="name">
   </div>
 </template>
