@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@unocss/reset": "^0.65.3",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
@@ -28,6 +29,7 @@
     "sass": "^1.83.1",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
+    "unocss": "^0.65.3",
     "vite": "^6.0.7",
     "vitest": "^2.1.8",
     "vue-tsc": "^2.2.0"
