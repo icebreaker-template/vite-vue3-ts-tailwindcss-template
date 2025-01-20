@@ -1,150 +1,158 @@
-/* eslint-disable */
+import * as DOM from '../lib/dom'
+import { isEditable } from '../lib/util'
+import updateGeometry from '../update-geometry'
 
-import * as DOM from '../lib/dom';
-import updateGeometry from '../update-geometry';
-import { isEditable } from '../lib/util';
+export default function (i) {
+  const element = i.element
 
-export default function(i) {
-  const element = i.element;
-
-  const elementHovered = () => DOM.matches(element, ':hover');
+  const elementHovered = () => DOM.matches(element, ':hover')
   const scrollbarFocused = () =>
-    DOM.matches(i.scrollbarX, ':focus') || DOM.matches(i.scrollbarY, ':focus');
+    DOM.matches(i.scrollbarX, ':focus') || DOM.matches(i.scrollbarY, ':focus')
 
   function shouldPreventDefault(deltaX, deltaY) {
-    const scrollTop = Math.floor(element.scrollTop);
+    const scrollTop = Math.floor(element.scrollTop)
     if (deltaX === 0) {
       if (!i.scrollbarYActive) {
-        return false;
+        return false
       }
       if (
-        (scrollTop === 0 && deltaY > 0) ||
-        (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)
+        (scrollTop === 0 && deltaY > 0)
+        || (scrollTop >= i.contentHeight - i.containerHeight && deltaY < 0)
       ) {
-        return !i.settings.wheelPropagation;
+        return !i.settings.wheelPropagation
       }
     }
 
-    const scrollLeft = element.scrollLeft;
+    const scrollLeft = element.scrollLeft
     if (deltaY === 0) {
       if (!i.scrollbarXActive) {
-        return false;
+        return false
       }
       if (
-        (scrollLeft === 0 && deltaX < 0) ||
-        (scrollLeft >= i.contentWidth - i.containerWidth && deltaX > 0)
+        (scrollLeft === 0 && deltaX < 0)
+        || (scrollLeft >= i.contentWidth - i.containerWidth && deltaX > 0)
       ) {
-        return !i.settings.wheelPropagation;
+        return !i.settings.wheelPropagation
       }
     }
-    return true;
+    return true
   }
 
-  i.event.bind(i.ownerDocument, 'keydown', e => {
+  i.event.bind(i.ownerDocument, 'keydown', (e) => {
     if (
-      (e.isDefaultPrevented && e.isDefaultPrevented()) ||
-      e.defaultPrevented
+      (e.isDefaultPrevented && e.isDefaultPrevented())
+      || e.defaultPrevented
     ) {
-      return;
+      return
     }
 
     if (!elementHovered() && !scrollbarFocused()) {
-      return;
+      return
     }
 
     let activeElement = document.activeElement
       ? document.activeElement
-      : i.ownerDocument.activeElement;
+      : i.ownerDocument.activeElement
     if (activeElement) {
       if (activeElement.tagName === 'IFRAME') {
-        activeElement = activeElement.contentDocument.activeElement;
-      } else {
+        activeElement = activeElement.contentDocument.activeElement
+      }
+      else {
         // go deeper if element is a webcomponent
         while (activeElement.shadowRoot) {
-          activeElement = activeElement.shadowRoot.activeElement;
+          activeElement = activeElement.shadowRoot.activeElement
         }
       }
       if (isEditable(activeElement)) {
-        return;
+        return
       }
     }
 
-    let deltaX = 0;
-    let deltaY = 0;
+    let deltaX = 0
+    let deltaY = 0
 
     switch (e.which) {
       case 37: // left
         if (e.metaKey) {
-          deltaX = -i.contentWidth;
-        } else if (e.altKey) {
-          deltaX = -i.containerWidth;
-        } else {
-          deltaX = -30;
+          deltaX = -i.contentWidth
         }
-        break;
+        else if (e.altKey) {
+          deltaX = -i.containerWidth
+        }
+        else {
+          deltaX = -30
+        }
+        break
       case 38: // up
         if (e.metaKey) {
-          deltaY = i.contentHeight;
-        } else if (e.altKey) {
-          deltaY = i.containerHeight;
-        } else {
-          deltaY = 30;
+          deltaY = i.contentHeight
         }
-        break;
+        else if (e.altKey) {
+          deltaY = i.containerHeight
+        }
+        else {
+          deltaY = 30
+        }
+        break
       case 39: // right
         if (e.metaKey) {
-          deltaX = i.contentWidth;
-        } else if (e.altKey) {
-          deltaX = i.containerWidth;
-        } else {
-          deltaX = 30;
+          deltaX = i.contentWidth
         }
-        break;
+        else if (e.altKey) {
+          deltaX = i.containerWidth
+        }
+        else {
+          deltaX = 30
+        }
+        break
       case 40: // down
         if (e.metaKey) {
-          deltaY = -i.contentHeight;
-        } else if (e.altKey) {
-          deltaY = -i.containerHeight;
-        } else {
-          deltaY = -30;
+          deltaY = -i.contentHeight
         }
-        break;
+        else if (e.altKey) {
+          deltaY = -i.containerHeight
+        }
+        else {
+          deltaY = -30
+        }
+        break
       case 32: // space bar
         if (e.shiftKey) {
-          deltaY = i.containerHeight;
-        } else {
-          deltaY = -i.containerHeight;
+          deltaY = i.containerHeight
         }
-        break;
+        else {
+          deltaY = -i.containerHeight
+        }
+        break
       case 33: // page up
-        deltaY = i.containerHeight;
-        break;
+        deltaY = i.containerHeight
+        break
       case 34: // page down
-        deltaY = -i.containerHeight;
-        break;
+        deltaY = -i.containerHeight
+        break
       case 36: // home
-        deltaY = i.contentHeight;
-        break;
+        deltaY = i.contentHeight
+        break
       case 35: // end
-        deltaY = -i.contentHeight;
-        break;
+        deltaY = -i.contentHeight
+        break
       default:
-        return;
+        return
     }
 
     if (i.settings.suppressScrollX && deltaX !== 0) {
-      return;
+      return
     }
     if (i.settings.suppressScrollY && deltaY !== 0) {
-      return;
+      return
     }
 
-    element.scrollTop -= deltaY;
-    element.scrollLeft += deltaX;
-    updateGeometry(i);
+    element.scrollTop -= deltaY
+    element.scrollLeft += deltaX
+    updateGeometry(i)
 
     if (shouldPreventDefault(deltaX, deltaY)) {
-      e.preventDefault();
+      e.preventDefault()
     }
-  });
+  })
 }
