@@ -15,9 +15,9 @@ onMounted(() => {
 
 <template>
   <div class="container mx-auto">
-    <div ref="container" class="bg-gray-200 rounded relative w-[600px] h-[500px]">
+    <div ref="container" class="bg-gray-200 rounded relative w-[600px]">
       <!-- EXAMPLE CONTENT -->
-      <div class="content p-5 w-[1280px] h-[900px]">
+      <div class="content p-5 w-[1280px]">
         <h2 class="font-weight-bold text-center ">
           Hello I'm a piece of example content!
         </h2>
