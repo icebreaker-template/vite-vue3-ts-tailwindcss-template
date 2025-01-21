@@ -94,7 +94,7 @@ export default class PerfectScrollbar {
     this.scrollbarXLeft = null
     const railXStyle = CSS.get(this.scrollbarXRail)
     this.scrollbarXBottom = Number.parseInt(railXStyle.bottom, 10)
-    if (isNaN(this.scrollbarXBottom)) {
+    if (Number.isNaN(this.scrollbarXBottom)) {
       this.isScrollbarXUsingBottom = false
       this.scrollbarXTop = toInt(railXStyle.top)
     }
@@ -123,7 +123,7 @@ export default class PerfectScrollbar {
     this.scrollbarYTop = null
     const railYStyle = CSS.get(this.scrollbarYRail)
     this.scrollbarYRight = Number.parseInt(railYStyle.right, 10)
-    if (isNaN(this.scrollbarYRight)) {
+    if (Number.isNaN(this.scrollbarYRight)) {
       this.isScrollbarYUsingRight = false
       this.scrollbarYLeft = toInt(railYStyle.left)
     }
