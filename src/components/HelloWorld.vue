@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto">
+  <div class="container mx-auto p-16 gap-10 grid">
     <div ref="dom0" class="bg-gray-200 rounded relative w-[600px]">
       <!-- EXAMPLE CONTENT -->
       <div class="content p-5 w-[1280px]">
