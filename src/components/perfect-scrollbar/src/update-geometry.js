@@ -124,7 +124,18 @@ function updateCss(element, i) {
     xRailOffset.left = element.scrollLeft
   }
   if (i.isScrollbarXUsingBottom) {
-    xRailOffset.bottom = i.scrollbarXBottom - roundedScrollTop
+    const rect = element.getBoundingClientRect()
+    const topLimit = window.innerHeight
+      - rect.top
+      - rect.height
+      - 10 // this.options.bottomOffset
+    // - this.options.topOffset
+    if (topLimit < 0) {
+      xRailOffset.bottom = `${-topLimit}px`
+    }
+    else {
+      xRailOffset.bottom = i.scrollbarXBottom - roundedScrollTop
+    }
   }
   else {
     xRailOffset.top = i.scrollbarXTop + roundedScrollTop
