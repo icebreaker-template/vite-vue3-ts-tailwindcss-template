@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type * as zod from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-import { Form, type SubmissionContext } from 'vee-validate'
+import { Form, type InvalidSubmissionContext, type SubmissionContext } from 'vee-validate'
 import { computed, getCurrentInstance } from 'vue'
 import { useOrderedChildren } from '../hooks/useOrderedChildren'
-import { IceForm, IceFormItem } from './constants'
+import { IceFormName } from './constants'
 
 defineOptions({
-  name: IceForm,
+  name: IceFormName,
 })
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ const {
   removeChild,
 } = useOrderedChildren(getCurrentInstance()!, IceFormItem)
 
-function onInvalidSubmit() {
+function onInvalidSubmit(ctx: InvalidSubmissionContext<any>) {
 
 }
 

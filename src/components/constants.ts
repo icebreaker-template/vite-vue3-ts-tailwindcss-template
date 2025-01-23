@@ -1,3 +1,3 @@
-export const IceForm = 'IceForm'
+export const IceFormName = 'IceForm'
 
-export const IceFormItem = 'IceFormItem'
+export const IceFormItemName = 'IceFormItem'

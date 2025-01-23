@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ErrorMessage, Field, type RuleExpression } from 'vee-validate'
-import { IceFormItem } from './constants'
+import { IceFormItemName } from './constants'
 
 defineOptions({
-  name: IceFormItem,
+  name: IceFormItemName,
 })
 
 const props = defineProps<{
