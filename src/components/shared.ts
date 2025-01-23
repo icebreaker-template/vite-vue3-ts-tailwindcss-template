@@ -1,9 +1,16 @@
 import { inject, provide } from 'vue'
 
-export function injectCtx() {
-
+export interface State {
+  uid: number
+  [key: string]: any
 }
 
-export function provideCtx() {
+export const CtxSymbol = Symbol.for('ctx')
 
+export function injectCtx() {
+  return inject(CtxSymbol, {})
+}
+
+export function provideCtx(ctx: any) {
+  provide(CtxSymbol, ctx)
 }

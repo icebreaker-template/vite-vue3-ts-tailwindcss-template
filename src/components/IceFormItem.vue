@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ErrorMessage, Field, type RuleExpression } from 'vee-validate'
+import { getCurrentInstance, onBeforeUnmount } from 'vue'
 import { IceFormItemName } from './constants'
+import { injectCtx } from './shared'
 
 defineOptions({
   name: IceFormItemName,
@@ -8,13 +10,21 @@ defineOptions({
 
 const props = defineProps<{
   name: string
-  rules: RuleExpression<unknown>
+  rules?: RuleExpression<unknown>
 }>()
+const { children, addChild, removeChild } = injectCtx()
+const vm = getCurrentInstance()
+
+addChild(vm)
+
+onBeforeUnmount(() => {
+  removeChild(vm?.uid)
+})
 </script>
 
 <template>
-  <div>
-    <Field :name="name" :rules="rules" />
-    <ErrorMessage :name="name" />
-  </div>
+  <Field v-slot="scope" :name="name" :rules="rules">
+    <slot v-bind="scope" />
+  </Field>
+  <ErrorMessage :name="name" />
 </template>
