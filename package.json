@@ -13,6 +13,13 @@
   },
   "dependencies": {
     "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.474.0",
+    "radix-vue": "^1.9.12",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
     "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
@@ -22,6 +29,7 @@
     "@icebreakers/eslint-config": "^0.7.13",
     "@tailwindcss/vite": "^4.0.0",
     "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.10.10",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
@@ -36,5 +44,6 @@
     "vite": "^6.0.11",
     "vitest": "^3.0.4",
     "vue-tsc": "^2.2.0"
-  }
+  },
+  "packageManager": "pnpm@8.12.1+sha1.aa961ffce9b6eaa56307d9b5ff7e984f25b7eb58"
 }
