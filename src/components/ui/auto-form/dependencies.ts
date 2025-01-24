@@ -16,8 +16,7 @@ export default function useDependencies(
   const currentFieldName = fieldName.replace(/\[\d+\]/g, '')
   const currentFieldValue = useFieldValue<any>(fieldName)
 
-  if (!form)
-    throw new Error('useDependencies should be used within <AutoForm>')
+  if (!form) { throw new Error('useDependencies should be used within <AutoForm>') }
 
   const dependencies = injectDependencies()
   const isDisabled = ref(false)
@@ -37,7 +36,7 @@ export default function useDependencies(
 
     if (index >= 0 && sourceInitial.join(',') === targetInitial.join(',')) {
       const [_currentLast, ...currentInitial] = fieldName.split('.').toReversed()
-      return getFromPath(form.value, currentInitial.join('.') + sourceLast);
+      return getFromPath(form.value, currentInitial.join('.') + sourceLast)
     }
 
     return getFromPath(form.value, source)
@@ -60,23 +59,19 @@ export default function useDependencies(
 
       switch (dep.type) {
         case DependencyType.DISABLES:
-          if (conditionMet)
-            isDisabled.value = true
+          if (conditionMet) { isDisabled.value = true }
 
           break
         case DependencyType.REQUIRES:
-          if (conditionMet)
-            isRequired.value = true
+          if (conditionMet) { isRequired.value = true }
 
           break
         case DependencyType.HIDES:
-          if (conditionMet)
-            isHidden.value = true
+          if (conditionMet) { isHidden.value = true }
 
           break
         case DependencyType.SETS_OPTIONS:
-          if (conditionMet)
-            overrideOptions.value = dep.options
+          if (conditionMet) { overrideOptions.value = dep.options }
 
           break
       }

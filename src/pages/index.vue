@@ -1,36 +1,53 @@
 <script setup lang="ts">
-import IceForm from '../components/IceForm.vue'
-import IceFormItem from '../components/IceFormItem.vue'
+import { Button } from '@/components/ui/button'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { toast } from '@/components/ui/toast'
+
+import { toTypedSchema } from '@vee-validate/zod'
+import { useForm } from 'vee-validate'
+import { h } from 'vue'
+import * as z from 'zod'
+
+const formSchema = toTypedSchema(z.object({
+  username: z.string().min(2).max(50),
+}))
+
+const { handleSubmit } = useForm({
+  validationSchema: formSchema,
+})
+
+const onSubmit = handleSubmit((values) => {
+  toast({
+    title: 'You submitted the following values:',
+    description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
+  })
+})
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <IceForm class="border grid gap-6 p-4">
-      <IceFormItem name="1">
-        <input type="text">
-      </IceFormItem>
-      <IceFormItem name="2">
-        <input type="text">
-      </IceFormItem>
-      <IceFormItem name="3">
-        <input type="text">
-      </IceFormItem>
-      <IceFormItem name="4">
-        <IceForm>
-          <IceFormItem name="1">
-            <input type="text">
-          </IceFormItem>
-          <IceFormItem name="1">
-            <input type="text">
-          </IceFormItem>
-          <IceFormItem name="1">
-            <input type="text">
-          </IceFormItem>
-        </IceForm>
-      </IceFormItem>
-      <button type="submit">
-        Submit
-      </button>
-    </IceForm>
-  </div>
+  <form class="w-2/3 space-y-6" @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="username">
+      <FormItem>
+        <FormLabel>Username</FormLabel>
+        <FormControl>
+          <Input type="text" placeholder="shadcn" v-bind="componentField" />
+        </FormControl>
+        <FormDescription>
+          This is your public display name.
+        </FormDescription>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <Button type="submit">
+      Submit
+    </Button>
+  </form>
 </template>

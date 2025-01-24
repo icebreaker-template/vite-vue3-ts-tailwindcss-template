@@ -33,8 +33,7 @@ function isZodDefault(
 }
 
 const itemShape = computed(() => {
-  if (!props.schema)
-    return
+  if (!props.schema) { return }
 
   const schema: z.ZodAny = isZodArray(props.schema)
     ? props.schema._def.type

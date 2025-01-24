@@ -32,8 +32,7 @@ const shapes = computed(() => {
     const item = shape[name] as ZodAny
     const baseItem = getBaseSchema(item) as ZodAny
     let options = (baseItem && 'values' in baseItem._def) ? baseItem._def.values as string[] : undefined
-    if (!Array.isArray(options) && typeof options === 'object')
-      options = Object.values(options)
+    if (!Array.isArray(options) && typeof options === 'object') { options = Object.values(options) }
 
     val[name as keyof T] = {
       type: getBaseType(item),
@@ -65,7 +64,7 @@ const formComponentProps = computed(() => {
   if (props.form) {
     return {
       onSubmit: props.form.handleSubmit(val => emits('submit', val)),
-    };
+    }
   }
   else {
     const formSchema = toTypedSchema(props.schema)
@@ -73,7 +72,7 @@ const formComponentProps = computed(() => {
       keepValues: true,
       validationSchema: formSchema,
       onSubmit: (val: GenericObject) => emits('submit', val),
-    };
+    }
   }
 })
 </script>
