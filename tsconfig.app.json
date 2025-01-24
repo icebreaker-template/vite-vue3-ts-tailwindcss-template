@@ -6,6 +6,9 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "types": [
+      "vite-plugin-vue-layouts/client"
+    ],
     /* Linting */
     "strict": true,
     "noFallthroughCasesInSwitch": true,

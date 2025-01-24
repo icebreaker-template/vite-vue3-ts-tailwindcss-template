@@ -1,8 +1,9 @@
 import path from 'node:path'
-import tailwindcss from '@tailwindcss/vite'
-import vue from '@vitejs/plugin-vue'
+import Tailwindcss from '@tailwindcss/vite'
+import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
+import Layouts from 'vite-plugin-vue-layouts'
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
@@ -14,8 +15,9 @@ export default defineConfig({
     VueRouter({
 
     }),
-    vue(),
-    tailwindcss(),
+    Layouts(),
+    Vue(),
+    Tailwindcss(),
   ],
   css: {
     preprocessorOptions: {
