@@ -17,7 +17,7 @@ export default defineConfig({
     }),
     Layouts(),
     Vue(),
-    Tailwindcss(),
+    // Tailwindcss(),
   ],
   css: {
     preprocessorOptions: {
