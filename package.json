@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@icebreakers/eslint-config": "^0.7.13",
-    "@tailwindcss/vite": "^4.0.2",
+    "@tailwindcss/vite": "^4.0.3",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.0",
     "@vitejs/plugin-vue": "^5.2.1",
@@ -38,7 +38,7 @@
     "jsdom": "^26.0.0",
     "postcss": "^8.5.1",
     "sass": "^1.83.4",
-    "tailwindcss": "^4.0.2",
+    "tailwindcss": "^4.0.3",
     "typescript": "^5.7.3",
     "unplugin-vue-router": "^0.11.2",
     "vite": "^6.0.11",
