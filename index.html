@@ -7,8 +7,11 @@
     <title>Vite + Vue + TS</title>
     <script>
       class PictureSourceImg extends HTMLImageElement {
+        originSrc
         constructor() {
           super()
+          this.originSrc = this.getAttribute('src')
+          this.src = ''
         }
 
         connectedCallback() {
