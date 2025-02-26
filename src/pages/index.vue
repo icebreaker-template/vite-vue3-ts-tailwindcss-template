@@ -1,53 +1,45 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { toast } from '@/components/ui/toast'
 
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-import { h } from 'vue'
-import * as z from 'zod'
-
-const formSchema = toTypedSchema(z.object({
-  username: z.string().min(2).max(50),
-}))
-
-const { handleSubmit } = useForm({
-  validationSchema: formSchema,
-})
-
-const onSubmit = handleSubmit((values) => {
-  toast({
-    title: 'You submitted the following values:',
-    description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
-  })
-})
 </script>
 
 <template>
-  <form class="w-2/3 space-y-6" @submit="onSubmit">
-    <FormField v-slot="{ componentField }" name="username">
-      <FormItem>
-        <FormLabel>Username</FormLabel>
-        <FormControl>
-          <Input type="text" placeholder="shadcn" v-bind="componentField" />
-        </FormControl>
-        <FormDescription>
-          This is your public display name.
-        </FormDescription>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-    <Button type="submit">
-      Submit
-    </Button>
-  </form>
+  <h1>你好 WOrld</h1>
+  <!-- 主题颜色背景 -->
+  <header class="custom-header">
+    @layer 示例展示
+  </header>
+
+  <main class="flex-center p-4">
+    <div class="card">
+      <h2 class="text-center">
+        欢迎来到 CSS @layer 示例
+      </h2>
+      <p>
+        这个示例展示了如何使用 <code>@layer</code> 组织 CSS 代码，使其更结构化、更易于维护。
+      </p>
+
+      <!-- 按钮组 -->
+      <div class="flex-center mt-4">
+        <button class="btn-primary">
+          主要按钮
+        </button>
+        <button class="btn-secondary ml-4">
+          次要按钮
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 另一张卡片 -->
+  <section class="p-4">
+    <div class="card">
+      <h3>使用 @layer 的好处</h3>
+      <ul>
+        <li>清晰的分层，提高可读性</li>
+        <li>避免样式冲突，增强维护性</li>
+        <li>可以轻松地自定义主题</li>
+        <li>提高复用性，减少重复代码</li>
+      </ul>
+    </div>
+  </section>
 </template>
