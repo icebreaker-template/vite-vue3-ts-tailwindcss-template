@@ -15,3 +15,11 @@ const name = defineModel<string>({
     <input v-model="name">
   </div>
 </template>
+
+<style>
+@layer app {
+  h1 {
+    color: chocolate;
+  }
+}
+</style>

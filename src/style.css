@@ -1,7 +1,7 @@
-h1 {
+/* h1 {
   color: red;
-}
-
+} */
+@layer theme, base, components, utilities, app;
 /* 工具层 (utilities) - 定义工具类，可用于快速布局或覆盖样式 */
 @layer utilities {
   @tailwind utilities;
@@ -53,9 +53,9 @@ h1 {
 
 /* 组件层 (components) - 定义可复用的 UI 组件，如按钮、卡片等 */
 @layer components {
-  h1 {
+  /* h1 {
     color: yellow;
-  }
+  } */
   .btn {
     display: inline-block;
     padding: 0.75rem 1.5rem;
@@ -93,7 +93,7 @@ h1 {
   }
 }
 
-@layer theme, base, components, utilities, app;
+
 
 /* 主题层 (theme) - 定义全局变量和主题色 */
 @layer theme {
