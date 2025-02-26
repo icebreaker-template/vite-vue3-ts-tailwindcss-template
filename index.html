@@ -5,6 +5,56 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + Vue + TS</title>
+    <script>
+      class PictureSourceImg extends HTMLImageElement {
+        constructor() {
+          super()
+        }
+
+        connectedCallback() {
+          this.render()
+        }
+
+        render() {
+          const imgSrc = this.getAttribute('src')
+          const imgAlt = this.getAttribute('alt') || ''
+
+          if (!imgSrc) {
+            console.error('`src` attribute is required for <ice-img>.')
+            return
+          }
+
+          // 生成不同格式的图片路径
+          const webpSrc = imgSrc.replace(/\.\w+$/, '.webp')
+          const avifSrc = imgSrc.replace(/\.\w+$/, '.avif')
+          const picture = document.createElement('picture')
+          const avifSource = document.createElement('source')
+          avifSource.srcset = avifSrc
+          avifSource.type = 'image/avif'
+          picture.appendChild(avifSource)
+          const webpSource = document.createElement('source')
+          webpSource.srcset = webpSrc
+          webpSource.type = 'image/webp'
+          picture.appendChild(webpSource)
+          const newImg = document.createElement('img')
+          newImg.src = imgSrc
+          newImg.alt = imgAlt
+          newImg.width = this.width
+          newImg.height = this.height
+          ;[...this.attributes].forEach((attr) => {
+            if (attr.name !== 'is') {
+              newImg.setAttribute(attr.name, attr.value)
+            }
+          })
+
+          picture.appendChild(newImg)
+          this.replaceWith(picture)
+        }
+      }
+
+      // 注册自定义元素
+      customElements.define('ice-img', PictureSourceImg, { extends: 'img' })
+    </script>
   </head>
   <body>
     <div id="app"></div>
