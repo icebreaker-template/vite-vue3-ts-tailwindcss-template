@@ -17,17 +17,15 @@ const { t } = useI18n()
   </div>
 </template>
 
-<style scoped></style>
-
-<i18n>
-  {
-    "en": {
-      "language": "Language",
-      "hello": "hello, world!"
-    },
-    "zh": {
-      "language": "言語",
-      "hello": "こんにちは、世d sa d sa界！"
-    }
+<i18n lang="json">
+{
+  "en": {
+    "language": "Language",
+    "hello": "hello, world!"
+  },
+  "zh": {
+    "language": "言語",
+    "hello": "こんにちは、世d sa d sa界！"
   }
+}
 </i18n>
