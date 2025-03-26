@@ -4,12 +4,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold underline">
-      About
-    </h1>
-    <div>
-      {{ t('hello') }}
-    </div>
+    <div>我是其他页面</div>
     <HelloWorld msg="About" />
   </div>
 </template>

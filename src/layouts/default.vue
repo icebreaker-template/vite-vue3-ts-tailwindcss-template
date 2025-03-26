@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStore } from '@/store'
 import { useI18n } from 'vue-i18n'
-import { RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 
 const { t } = useI18n()
 const store = useStore()
@@ -18,12 +18,14 @@ function toggle() {
 
 <template>
   <div class="container mx-auto">
-    {{ t('title') }}
-    <button
-      @click="toggle"
-    >
-      toggle
-    </button>
+    <div>
+      <RouterLink to="/">
+        上传
+      </RouterLink>
+      <RouterLink to="/about">
+        其他页面
+      </RouterLink>
+    </div>
     <RouterView />
   </div>
 </template>
