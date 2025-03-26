@@ -11,6 +11,8 @@ onMounted(() => {
   shareWorker.port.onmessage = (e) => {
     console.log(e)
   }
+  // 传递 你可以将 File 或 Blob 对象传递给Web Worker，这样可以避免文件的完整复制。
+  // 当你通过 postMessage 将文件传递给Web Worker时，可以使用 transfer 参数，将文件的引用传递给worker。
 
   shareWorker.port.postMessage({
     type: 'upload',
@@ -18,6 +20,8 @@ onMounted(() => {
       file: 'test.txt',
       content: 'hello world',
     },
+  }, {
+    transfer: [],
   })
 })
 </script>
