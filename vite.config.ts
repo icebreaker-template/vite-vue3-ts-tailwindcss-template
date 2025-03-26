@@ -6,9 +6,6 @@ import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
 import Layouts from 'vite-plugin-vue-layouts'
 
-function r(p: string) {
-  return path.relative(__dirname, p)
-}
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
@@ -26,18 +23,6 @@ export default defineConfig({
     VueI18nPlugin({
 
     }),
-    {
-      name: 'x',
-      resolveId(source, importer, options) {
-        console.log('resolveId', source)
-      },
-      load(id, options) {
-        console.log('load', r(id))
-      },
-      transform(code, id, options) {
-        console.log('transform', r(id))
-      },
-    },
   ],
   css: {
     preprocessorOptions: {
