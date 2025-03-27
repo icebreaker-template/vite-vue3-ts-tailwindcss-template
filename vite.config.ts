@@ -3,6 +3,7 @@ import process from 'node:process'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import Tailwindcss from '@tailwindcss/vite'
 import Vue from '@vitejs/plugin-vue'
+import VueJsx from '@vitejs/plugin-vue-jsx'
 import pkg from 'ali-oss'
 import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -32,6 +33,7 @@ export default defineConfig({
     }),
     Layouts(),
     Vue(),
+    VueJsx({}),
     Tailwindcss(),
     VueI18nPlugin({
 
@@ -63,9 +65,4 @@ export default defineConfig({
       },
     },
   ],
-  css: {
-    preprocessorOptions: {
-      scss: { api: 'modern-compiler' },
-    },
-  },
 })

@@ -1,4 +1,5 @@
 // MessageEvent
+// ShareWorker 方案存在的问题是没有global的window
 import { initClient } from '../lib/oss'
 
 declare let self: SharedWorkerGlobalScope
@@ -10,7 +11,6 @@ async function uploadFile(file: Blob, port: MessagePort) {
   const oss = await initClient()
   const res = await oss.multipartUpload('shared', file, {
     progress: (p) => {
-      console.log('progress', p)
       port.postMessage({
         type: 'upload-progress',
         message: Date.now(),

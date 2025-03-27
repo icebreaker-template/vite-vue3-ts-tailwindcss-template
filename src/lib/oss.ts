@@ -1,8 +1,9 @@
 import OSS from 'ali-oss'
 import axios from 'axios'
 
-export async function getToken() {
-  const t = localStorage.getItem('oss-token')
+const cacheKey = 'oss-token'
+export async function getToken(): Promise<{ data: any }> {
+  const t = localStorage.getItem(cacheKey)
   let cache = (() => {
     try {
       return JSON.parse(typeof t === 'string' ? t : '')
@@ -10,7 +11,7 @@ export async function getToken() {
     catch {
 
     }
-  }) ()
+  })()
 
   if (cache) {
     // 没有过期
@@ -23,7 +24,7 @@ export async function getToken() {
 
   const res = await axios.get('/api/sts')
   cache = res.data
-  localStorage.setItem('oss-token', JSON.stringify(cache))
+  localStorage.setItem(cacheKey, JSON.stringify(cache))
 
   return {
     data: cache,
