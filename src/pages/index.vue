@@ -1,21 +1,46 @@
-<script setup lang="tsx">
+<script setup lang="ts">
 import type OSS from 'ali-oss'
-import type { UploadInstance, UploadUserFile } from 'element-plus'
-import { ElNotification, ElProgress } from 'element-plus'
+import type { NotificationHandle, UploadInstance, UploadUserFile } from 'element-plus'
+import { ElButton, ElNotification, ElProgress } from 'element-plus'
 import { h, onMounted, ref } from 'vue'
 import { initClient } from '../lib/oss'
 
 const uploadRef = ref<UploadInstance>()
-const fileList = ref<UploadUserFile[]>([])
+const fileList = ref<(UploadUserFile & { cpt?: OSS.Checkpoint })[]>([])
 
 let OSSClient: OSS
 const bc = new BroadcastChannel('happy')
 
 const isUploading = ref(false)
+let hotificationHandle: NotificationHandle
+
+function doUpload(opts?: { withCheckpoint?: boolean }) {
+  return Promise.all(fileList.value.map(async (file) => {
+    const options: OSS.MultipartUploadOptions = {
+      progress(p: number, cpt: OSS.Checkpoint) {
+        file.percentage = p * 100
+        if (cpt) {
+          file.cpt = cpt
+        }
+
+        bc.postMessage({
+          progress: p,
+        })
+      },
+    }
+    if (opts?.withCheckpoint) {
+      options.checkpoint = file.cpt
+    }
+    const res = await OSSClient.multipartUpload(file.name, file.raw, options)
+
+    return res
+  }))
+}
+
 async function submitUpload() {
   try {
     isUploading.value = true
-    ElNotification({
+    hotificationHandle = ElNotification({
       title: '进度',
       message: () => {
         return h('div', null, [
@@ -36,6 +61,34 @@ async function submitUpload() {
                   return `${percentage.toFixed(2)}%`
                 },
               }),
+              h('div', {
+                class: 'text-xs text-gray-500',
+              }, [
+
+                h(ElButton, {
+                  size: 'small',
+                  onClick() {
+                    // @ts-ignore
+                    OSSClient.cancel()
+                  },
+                }, '暂停'),
+                h(ElButton, {
+                  size: 'small',
+                  onClick() {
+                    doUpload({
+                      withCheckpoint: true,
+                    })
+                  },
+                }, '继续'),
+                h(ElButton, {
+                  size: 'small',
+                  onClick() {
+                    if (file.cpt) {
+                      OSSClient.abortMultipartUpload(file.cpt.name, file.cpt.uploadId)
+                    }
+                  },
+                }, '取消'),
+              ]),
             ])
           }),
         ])
@@ -44,21 +97,11 @@ async function submitUpload() {
       duration: 0,
     })
 
-    await Promise.all(fileList.value.map(async (file) => {
-      const res = await OSSClient.multipartUpload(file.name, file.raw, {
-        progress(p, cpt) {
-          file.percentage = p * 100
-          // @ts-ignore
-          file.cpt = cpt
+    await doUpload()
 
-          bc.postMessage({
-            progress: p,
-          })
-        },
-      })
-
-      return res
-    }))
+    setTimeout(() => {
+      hotificationHandle.close()
+    }, 3000)
   }
   finally {
     isUploading.value = false
@@ -67,28 +110,26 @@ async function submitUpload() {
 
 onMounted(async () => {
   OSSClient = await initClient()
-  bc.addEventListener('message', (e) => {
-    if (!isUploading.value) {
+  // bc.addEventListener('message', (e) => {
+  //   if (!isUploading.value) {
 
-    }
-  })
+  //   }
+  // })
 })
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col pt-8">
     <el-upload ref="uploadRef" v-model:file-list="fileList" multiple action="" :auto-upload="false">
       <template #trigger>
-        <el-button type="primary">
+        <ElButton type="primary">
           select file
-        </el-button>
+        </ElButton>
       </template>
 
-      <el-button class="ml-3" type="success" @click="submitUpload">
+      <ElButton class="ml-3" type="success" @click="submitUpload">
         upload to server
-      </el-button>
+      </ElButton>
     </el-upload>
-
-    <!-- <el-input-number v-model="percentageRef" :min="0" :max="100" :step="10" /> -->
   </div>
 </template>
