@@ -2,6 +2,7 @@
 import type { UploadInstance, UploadUserFile } from 'element-plus'
 import { ElNotification, ElProgress } from 'element-plus'
 import { h, onMounted, ref } from 'vue'
+import { getToken } from '../lib/oss'
 import Happy from '../workers/upload.worker?sharedworker'
 
 const uploadRef = ref<UploadInstance>()
@@ -19,7 +20,8 @@ function submitUpload() {
   })
 }
 
-onMounted(() => {
+onMounted(async () => {
+  getToken()
   shareWorker = new Happy()
 
   shareWorker.port.start()
@@ -77,15 +79,15 @@ function addData() {
   const file = new Blob(['hello world'], {
     type: 'text/plain',
   })
-  
+
   shareWorker.port.postMessage({
     type: 'add',
     data: {
       name: 'test.txt',
       content: file,
-      
+
     },
-  },)
+  })
 }
 //  [stream]
 // function updatePercentage() {

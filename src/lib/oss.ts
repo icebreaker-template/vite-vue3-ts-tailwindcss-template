@@ -1,4 +1,9 @@
 import OSS from 'ali-oss'
+import axios from 'axios'
+
+export function getToken() {
+  return axios.get('/api/sts')
+}
 
 export function getInitConfig() {
   return {
@@ -17,6 +22,6 @@ export function getInitConfig() {
 }
 
 export function initClient() {
-  const client = new OSS(getInitConfig());
+  const client = new OSS(getInitConfig())
   return client
 }
