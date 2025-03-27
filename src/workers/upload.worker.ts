@@ -1,10 +1,35 @@
-// eslint-disable-next-line no-var
-declare var self: SharedWorkerGlobalScope
 // MessageEvent
+import { initClient } from '../lib/oss'
 
+declare let self: SharedWorkerGlobalScope
 const state: any[] = []
 
 const taskMap = new Map()
+
+async function uploadFile(file: Blob, port: MessagePort) {
+  const oss = await initClient()
+  const res = await oss.multipartUpload('shared', file, {
+    progress: (p) => {
+      console.log('progress', p)
+      port.postMessage({
+        type: 'upload-progress',
+        message: Date.now(),
+        data: {
+          progress: p,
+          taskId: 1,
+        },
+      })
+    },
+  })
+  port.postMessage({
+    type: 'upload-finish',
+    message: Date.now(),
+    data: {
+      progress: 1,
+      taskId: 1,
+    },
+  })
+}
 
 let ptr: number
 self.addEventListener('connect', (event) => {
@@ -21,6 +46,11 @@ self.addEventListener('connect', (event) => {
         }
         else if (event.data.type === 'upload-files') {
           console.log('upload-files', event.data)
+          x.postMessage({
+            type: 'upload-start',
+            message: Date.now(),
+          })
+          uploadFile(event.data.blobs[0], x)
           return
         }
         x.postMessage('pong')
@@ -39,10 +69,6 @@ self.addEventListener('connect', (event) => {
   }, 10000)
 
   for (const x of event.ports) {
-    // x.postMessage({
-    //   type: 'upload-start',
-    //   message: Date.now(),
-    // })
     x.postMessage({
       type: 'sync',
       message: Date.now(),

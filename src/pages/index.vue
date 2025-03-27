@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import type OSS from 'ali-oss'
 import type { UploadInstance, UploadUserFile } from 'element-plus'
 import { ElNotification, ElProgress } from 'element-plus'
 import { h, onMounted, ref } from 'vue'
-import { getToken } from '../lib/oss'
+import { initClient } from '../lib/oss'
 import Happy from '../workers/upload.worker?sharedworker'
 
 const uploadRef = ref<UploadInstance>()
 const fileList = ref<UploadUserFile[]>([])
 const percentageRef = ref(0)
 let shareWorker: SharedWorker
-function submitUpload() {
+const xxxpercentage = ref(0)
+
+let OSSClient: OSS
+
+async function submitUpload() {
   const files = fileList.value.map(item => item.raw) as File[]
   const blobs = files.map(file => new Blob([file], { type: file.type }))
   shareWorker.port.postMessage({
@@ -18,10 +23,16 @@ function submitUpload() {
       blobs,
     },
   })
+  const res = await OSSClient.multipartUpload('xxx/a', blobs[0], {
+    progress(p) {
+      xxxpercentage.value = p * 100
+    },
+  })
+  console.log(res)
 }
 
 onMounted(async () => {
-  getToken()
+  OSSClient = await initClient()
   shareWorker = new Happy()
 
   shareWorker.port.start()
@@ -30,11 +41,11 @@ onMounted(async () => {
   shareWorker.port.onmessage = (e) => {
     console.log(e)
     if (e.data.type === 'info') {
-      ElNotification({
-        title: '提示',
-        message: e.data.data,
-        position: 'bottom-right',
-      })
+      // ElNotification({
+      //   title: '提示',
+      //   message: e.data.data,
+      //   position: 'bottom-right',
+      // })
     }
     else if (e.data.type === 'upload-start') {
       ElNotification({
@@ -49,7 +60,7 @@ onMounted(async () => {
       })
     }
     else if (e.data.type === 'upload-progress') {
-
+      percentageRef.value = e.data.data.progress * 100
     }
     else if (e.data.type === 'upload-end') {
 
@@ -118,5 +129,6 @@ function addData() {
       添加数据
     </el-button>
     <el-input-number v-model="percentageRef" :min="0" :max="100" :step="10" />
+    <ElProgress :percentage="xxxpercentage" />
   </div>
 </template>
