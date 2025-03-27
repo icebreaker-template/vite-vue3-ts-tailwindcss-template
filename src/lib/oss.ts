@@ -1,6 +1,8 @@
 import OSS from 'ali-oss'
 import axios from 'axios'
+import pLimit from 'p-limit'
 
+const limit = pLimit(1)
 const cacheKey = 'oss-token'
 export async function getToken(): Promise<{ data: any }> {
   const t = localStorage.getItem(cacheKey)
@@ -32,7 +34,8 @@ export async function getToken(): Promise<{ data: any }> {
 }
 
 export async function getInitConfig() {
-  const res = await getToken()
+  // 避免 sts 调用并发
+  const res = await limit(() => getToken())
   // res.data.AccessKeyId
   // res.data.AccessKeySecret
   // res.data.SecurityToken

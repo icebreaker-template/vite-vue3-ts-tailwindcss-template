@@ -2,38 +2,44 @@
 import type OSS from 'ali-oss'
 import type { NotificationHandle, UploadInstance, UploadUserFile } from 'element-plus'
 import { ElButton, ElNotification, ElProgress } from 'element-plus'
-import { h, onMounted, ref } from 'vue'
+import { h, ref } from 'vue'
 import { initClient } from '../lib/oss'
 
 const uploadRef = ref<UploadInstance>()
-const fileList = ref<(UploadUserFile & { cpt?: OSS.Checkpoint })[]>([])
+type CustomFile = UploadUserFile & { cpt?: OSS.Checkpoint, OSSClient: OSS }
 
-let OSSClient: OSS
-const bc = new BroadcastChannel('happy')
+const fileList = ref<CustomFile[]>([])
+
+// 多浏览器 tab 广播
+// const bc = new BroadcastChannel('happy')
 
 const isUploading = ref(false)
 let hotificationHandle: NotificationHandle
 
+async function upload(file: CustomFile, opts?: { withCheckpoint?: boolean }) {
+  if (!file.OSSClient) {
+    const OSSClient = await initClient()
+    file.OSSClient = OSSClient
+  }
+
+  const options: OSS.MultipartUploadOptions = {
+    progress(p: number, cpt: OSS.Checkpoint) {
+      file.percentage = p * 100
+      if (cpt) {
+        file.cpt = cpt
+      }
+    },
+  }
+  if (opts?.withCheckpoint) {
+    options.checkpoint = file.cpt
+  }
+  const res = await file.OSSClient.multipartUpload(file.name, file.raw, options)
+
+  return res
+}
 function doUpload(opts?: { withCheckpoint?: boolean }) {
-  return Promise.all(fileList.value.map(async (file) => {
-    const options: OSS.MultipartUploadOptions = {
-      progress(p: number, cpt: OSS.Checkpoint) {
-        file.percentage = p * 100
-        if (cpt) {
-          file.cpt = cpt
-        }
-
-        bc.postMessage({
-          progress: p,
-        })
-      },
-    }
-    if (opts?.withCheckpoint) {
-      options.checkpoint = file.cpt
-    }
-    const res = await OSSClient.multipartUpload(file.name, file.raw, options)
-
-    return res
+  return Promise.all(fileList.value.map((file) => {
+    return upload(file, opts)
   }))
 }
 
@@ -68,14 +74,15 @@ async function submitUpload() {
                 h(ElButton, {
                   size: 'small',
                   onClick() {
-                    // @ts-ignore
-                    OSSClient.cancel()
+                    file.OSSClient
+                      // @ts-ignore
+                      .cancel()
                   },
                 }, '暂停'),
                 h(ElButton, {
                   size: 'small',
                   onClick() {
-                    doUpload({
+                    upload(file, {
                       withCheckpoint: true,
                     })
                   },
@@ -84,7 +91,7 @@ async function submitUpload() {
                   size: 'small',
                   onClick() {
                     if (file.cpt) {
-                      OSSClient.abortMultipartUpload(file.cpt.name, file.cpt.uploadId)
+                      file.OSSClient.abortMultipartUpload(file.cpt.name, file.cpt.uploadId)
                     }
                   },
                 }, '取消'),
@@ -107,15 +114,6 @@ async function submitUpload() {
     isUploading.value = false
   }
 }
-
-onMounted(async () => {
-  OSSClient = await initClient()
-  // bc.addEventListener('message', (e) => {
-  //   if (!isUploading.value) {
-
-  //   }
-  // })
-})
 </script>
 
 <template>
