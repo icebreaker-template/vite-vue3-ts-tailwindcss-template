@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { ref } from 'vue'
+import { RouterView } from 'vue-router'
+
+const activeIndex = ref('/')
 </script>
 
 <template>
-  <div class="container mx-auto">
-    <div>
-      <RouterLink to="/">
+  <div>
+    <el-menu :default-active="activeIndex" mode="horizontal" router>
+      <el-menu-item index="/">
         上传
-      </RouterLink>
-      <RouterLink to="/about">
+      </el-menu-item>
+      <el-menu-item index="/about">
         其他页面
-      </RouterLink>
-    </div>
+      </el-menu-item>
+      <el-menu-item index="/other">
+        Other
+      </el-menu-item>
+    </el-menu>
+  </div>
+  <div class="container mx-auto">
     <RouterView />
   </div>
 </template>

@@ -4,6 +4,7 @@ import App from './App.vue'
 import { router } from './router'
 import { i18n } from './store'
 import './style.css'
+import 'element-plus/dist/index.css'
 
 const pinia = createPinia()
 
