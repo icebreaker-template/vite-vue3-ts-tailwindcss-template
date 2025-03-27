@@ -1,8 +1,12 @@
+
+
 // eslint-disable-next-line no-var
 declare var self: SharedWorkerGlobalScope
 // MessageEvent
 
 const state: any[] = []
+
+const taskMap = new Map()
 
 let ptr: number
 self.addEventListener('connect', (event) => {
@@ -17,13 +21,16 @@ self.addEventListener('connect', (event) => {
           x.postMessage('pong')
           return
         }
+        else if (event.data.type === 'upload-files') {
+          console.log('upload-files', event.data)
+          return
+        }
         x.postMessage('pong')
       }
     }
   })
 
   ptr = setInterval(() => {
-    console.log('ping')
     for (const x of event.ports) {
       x.postMessage({
         type: 'info',
@@ -34,9 +41,14 @@ self.addEventListener('connect', (event) => {
   }, 10000)
 
   for (const x of event.ports) {
+    // x.postMessage({
+    //   type: 'upload-start',
+    //   message: Date.now(),
+    // })
     x.postMessage({
-      type: 'upload-start',
+      type: 'sync',
       message: Date.now(),
+      data: taskMap,
     })
   }
 })

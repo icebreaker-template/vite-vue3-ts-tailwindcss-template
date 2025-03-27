@@ -1,10 +1,24 @@
 <script setup lang="ts">
+import type { UploadInstance, UploadUserFile } from 'element-plus'
 import { ElNotification, ElProgress } from 'element-plus'
 import { h, onMounted, ref } from 'vue'
 import Happy from '../workers/upload.worker?sharedworker'
 
+const uploadRef = ref<UploadInstance>()
+const fileList = ref<UploadUserFile[]>([])
 const percentageRef = ref(0)
 let shareWorker: SharedWorker
+function submitUpload() {
+  const files = fileList.value.map(item => item.raw) as File[]
+  const blobs = files.map(file => new Blob([file], { type: file.type }))
+  shareWorker.port.postMessage({
+    type: 'upload-files',
+    data: {
+      blobs,
+    },
+  })
+}
+
 onMounted(() => {
   shareWorker = new Happy()
 
@@ -35,6 +49,15 @@ onMounted(() => {
     else if (e.data.type === 'upload-progress') {
 
     }
+    else if (e.data.type === 'upload-end') {
+
+    }
+    else if (e.data.type === 'upload-error') {
+
+    }
+    else if (e.data.type === 'sync') {
+      console.log(e.data)
+    }
   }
   // 传递 你可以将 File 或 Blob 对象传递给Web Worker，这样可以避免文件的完整复制。
   // 当你通过 postMessage 将文件传递给Web Worker时，可以使用 transfer 参数，将文件的引用传递给worker。
@@ -51,14 +74,20 @@ onMounted(() => {
 })
 
 function addData() {
+  const file = new Blob(['hello world'], {
+    type: 'text/plain',
+  })
+  
   shareWorker.port.postMessage({
     type: 'add',
     data: {
       name: 'test.txt',
-      content: Date.now(),
+      content: file,
+      
     },
-  })
+  },)
 }
+//  [stream]
 // function updatePercentage() {
 //   percentageRef.value = Math.floor(Math.random() * 100)
 // }
@@ -66,11 +95,26 @@ function addData() {
 
 <template>
   <div class="border flex flex-col">
-    <input type="file">
-    <button>上传</button>
-    <button @click="addData">
+    <el-upload
+      ref="uploadRef"
+      v-model:file-list="fileList"
+      class="upload-demo"
+      action=""
+      :auto-upload="false"
+    >
+      <template #trigger>
+        <el-button type="primary">
+          select file
+        </el-button>
+      </template>
+
+      <el-button class="ml-3" type="success" @click="submitUpload">
+        upload to server
+      </el-button>
+    </el-upload>
+    <el-button @click="addData">
       添加数据
-    </button>
+    </el-button>
     <el-input-number v-model="percentageRef" :min="0" :max="100" :step="10" />
   </div>
 </template>
