@@ -5,8 +5,9 @@ import { ElButton, ElNotification, ElProgress } from 'element-plus'
 import { h, ref } from 'vue'
 import { initClient } from '../lib/oss'
 
+type UploadStatus = 'ready' | 'pause' | 'uploading' | 'success' | 'fail'
 const uploadRef = ref<UploadInstance>()
-type CustomFile = UploadUserFile & { cpt?: OSS.Checkpoint, OSSClient: OSS }
+type CustomFile = UploadUserFile & { cpt?: OSS.Checkpoint, OSSClient: OSS, ossUploadStatus: UploadStatus }
 
 const fileList = ref<CustomFile[]>([])
 
@@ -24,6 +25,7 @@ async function upload(file: CustomFile, opts?: { withCheckpoint?: boolean }) {
 
   const options: OSS.MultipartUploadOptions = {
     progress(p: number, cpt: OSS.Checkpoint) {
+      file.ossUploadStatus = 'uploading'
       file.percentage = p * 100
       if (cpt) {
         file.cpt = cpt
@@ -34,10 +36,10 @@ async function upload(file: CustomFile, opts?: { withCheckpoint?: boolean }) {
     options.checkpoint = file.cpt
   }
   const res = await file.OSSClient.multipartUpload(file.name, file.raw, options)
-
+  file.ossUploadStatus = 'success'
   return res
 }
-function doUpload(opts?: { withCheckpoint?: boolean }) {
+function batchUpload(opts?: { withCheckpoint?: boolean }) {
   return Promise.all(fileList.value.map((file) => {
     return upload(file, opts)
   }))
@@ -77,7 +79,9 @@ async function submitUpload() {
                     file.OSSClient
                       // @ts-ignore
                       .cancel()
+                    file.ossUploadStatus = 'pause'
                   },
+                  disabled: file.ossUploadStatus === 'pause',
                 }, '暂停'),
                 h(ElButton, {
                   size: 'small',
@@ -86,15 +90,17 @@ async function submitUpload() {
                       withCheckpoint: true,
                     })
                   },
+                  disabled: file.ossUploadStatus !== 'pause',
                 }, '继续'),
                 h(ElButton, {
                   size: 'small',
                   onClick() {
                     if (file.cpt) {
                       file.OSSClient.abortMultipartUpload(file.cpt.name, file.cpt.uploadId)
+                      hotificationHandle.close()
                     }
                   },
-                }, '取消'),
+                }, '取消上传'),
               ]),
             ])
           }),
@@ -104,7 +110,7 @@ async function submitUpload() {
       duration: 0,
     })
 
-    await doUpload()
+    await batchUpload()
 
     setTimeout(() => {
       hotificationHandle.close()
