@@ -1,5 +1,5 @@
-import HelloWorld from '@/components/HelloWorld.vue'
 import { mount } from '@vue/test-utils'
+import HelloWorld from '@/components/HelloWorld.vue'
 
 describe('helloWorld', () => {
   it('displays message', () => {
