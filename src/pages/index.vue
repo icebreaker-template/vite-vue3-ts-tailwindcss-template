@@ -1,13 +1,32 @@
 <script setup lang="ts">
 import { FabricText, StaticCanvas } from 'fabric'
+import { onMounted, useTemplateRef } from 'vue'
 
-const canvas = new StaticCanvas()
-const helloWorld = new FabricText('Hello world!', {
-  width: undefined,
-  fontSize: 200,
+const canvasRef = useTemplateRef('canvasDom')
+
+let canvas: StaticCanvas
+
+onMounted(() => {
+  if (canvasRef.value) {
+    canvas = new StaticCanvas(canvasRef.value)
+    const helloWorld = new FabricText('Hello world!', {
+      // lockMovementX: true,
+      // lockMovementY: true,
+      // lockRotation: true,
+      // lockScalingFlip: true,
+      // lockScalingX: true,
+      // lockScalingY: true,
+      selectable: false,
+    })
+    canvas.add(helloWorld)
+    canvas.centerObject(helloWorld)
+
+    // requestAnimationFrame(function animate() {
+    //   canvas.requestRenderAll()
+    //   requestAnimationFrame(animate)
+    // })
+  }
 })
-canvas.add(helloWorld)
-canvas.centerObject(helloWorld)
 
 function download() {
   const imageSrc = canvas.toDataURL()
@@ -22,14 +41,14 @@ function download() {
 </script>
 
 <template>
-  <div class="bg-amber-50 ppp">
-    ppp
+  <div class="">
+    <div>
+      <canvas ref="canvasDom" class="border" width="500" height="500" />
+    </div>
     <div @click="download">
-      aaa
+      Download
     </div>
   </div>
 </template>
 
-<style>
-
-</style>
+<style></style>
