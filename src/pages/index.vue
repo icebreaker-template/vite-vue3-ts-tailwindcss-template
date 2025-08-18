@@ -1,37 +1,35 @@
 <script setup lang="ts">
+import { FabricText, StaticCanvas } from 'fabric'
 
+const canvas = new StaticCanvas()
+const helloWorld = new FabricText('Hello world!', {
+  width: undefined,
+  fontSize: 200,
+})
+canvas.add(helloWorld)
+canvas.centerObject(helloWorld)
+
+function download() {
+  const imageSrc = canvas.toDataURL()
+  // some download code down here
+  const a = document.createElement('a')
+  a.href = imageSrc
+  a.download = 'image.png'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
 </script>
 
 <template>
   <div class="bg-amber-50 ppp">
     ppp
-    <div class="aaa">
-      aaa
-    </div>
-  </div>
-  <div class="bg-blue-100 ppp sm">
-    ppp
-    <div class="aaa">
+    <div @click="download">
       aaa
     </div>
   </div>
 </template>
 
 <style>
-.ppp {
-  color: red;
 
-  .aaa {
-    color: blue;
-    font-size: 50px;
-  }
-
-  & {
-    font-size: 100px;
-  }
-
-  &.sm {
-    font-size: 50px;
-  }
-}
 </style>
