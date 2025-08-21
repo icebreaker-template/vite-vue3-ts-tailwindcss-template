@@ -12,6 +12,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  build: {
+    cssMinify: false,
+  },
   plugins: [
     VueRouter(),
     Layouts(),
