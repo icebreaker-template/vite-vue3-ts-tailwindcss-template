@@ -3,35 +3,16 @@
 </script>
 
 <template>
-  <div class="bg-amber-50 ppp">
-    ppp
-    <div class="aaa">
-      aaa
-    </div>
-  </div>
-  <div class="bg-blue-100 ppp sm">
-    ppp
-    <div class="aaa">
+  <div class="bg-amber-50">
+    <div class="aaa bg-amber-500">
       aaa
     </div>
   </div>
 </template>
 
 <style>
-.ppp {
-  color: red;
-
-  .aaa {
-    color: blue;
-    font-size: 50px;
-  }
-
-  & {
-    font-size: 100px;
-  }
-
-  &.sm {
-    font-size: 50px;
-  }
+.aaa {
+  width: 100px;
+  width: calc(var(--xxx) * 99);
 }
 </style>
